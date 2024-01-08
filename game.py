@@ -125,7 +125,7 @@ class PacmanGame:
 
             pygame.display.update()
     
-    def play_step(self):
+    def play_step(self,window):
         """self.pacman.move()
             self.pacman.update()
             
@@ -133,7 +133,7 @@ class PacmanGame:
                 ghost.move(self.board, self.pacman)
                 """
             
-        self.update_window(window, cell_size)
+        self.update_window(window, BLOCK_SIZE)
             
         self.clock.tick(GAME_SPEED)
 
@@ -143,11 +143,6 @@ class PacmanGame:
         window_height = 600
         window = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Pacman Game")
-
-        cell_size = BLOCK_SIZE
-
-        # Add code here to customize the game board
-        # You can use Pygame's drawing functions to create the board layout
 
         # Game loop
         running = True
