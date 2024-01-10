@@ -74,6 +74,7 @@ COOCKIES = [
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+COOCKIES_SET = set([(i,j) for j in range(len(COOCKIES)) for i in range(len(COOCKIES[0])) if COOCKIES[j][i] == 0])
 #1: wall
 #0: coockie
 #2: ghost spawn
@@ -126,17 +127,8 @@ class PacmanGame:
         return moves
     
     def update_window(self, window, cell_size):
-            for row in range(len(self.board)):
-                for col in range(len(self.board[row])):
-                    if self.board[row][col] == 1:
-                        pygame.draw.rect(window, (0, 0, 255), (col * cell_size, row * cell_size, cell_size, cell_size))
-                    elif self.board[row][col] == 0:
-                        if self.coockies[row][col] == 0:
-                            pygame.draw.circle(window, (255, 255, 0), (col * cell_size + cell_size // 2, row * cell_size + cell_size // 2), cell_size // 10)
-                    elif self.board[row][col] == 2:
-                        pygame.draw.rect(window, (255, 0, 0), (col * cell_size, row * cell_size, cell_size, cell_size))
-                    elif self.board[row][col] == 3:
-                        pygame.draw.circle(window, (255, 0, 255), (col * cell_size + cell_size // 2, row * cell_size + cell_size // 2), cell_size // 5)
+            for coockie in COOCKIES_SET:
+                pygame.draw.circle(window, (255, 255, 0), (coockie[0] * cell_size + cell_size // 2, coockie[1] * cell_size + cell_size // 2), cell_size // 5)
 
             pygame.display.update()
     
@@ -158,7 +150,20 @@ class PacmanGame:
         window_height = 600
         window = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Pacman Game")
+        
+        cell_size = BLOCK_SIZE
 
+        for row in range(len(self.board)):
+                for col in range(len(self.board[row])):
+                    if self.board[row][col] == 1:
+                        pygame.draw.rect(window, (0, 0, 255), (col * cell_size, row * cell_size, cell_size, cell_size))
+                    elif self.board[row][col] == 2:
+                        pygame.draw.rect(window, (255, 0, 0), (col * cell_size, row * cell_size, cell_size, cell_size))
+                    elif self.board[row][col] == 3:
+                        pygame.draw.circle(window, (255, 0, 255), (col * cell_size + cell_size // 2, row * cell_size + cell_size // 2), cell_size // 5)
+        
+        pygame.display.update()
+        
         # Game loop
         running = True
         while running:
@@ -169,7 +174,7 @@ class PacmanGame:
             # Add code here to update and render the game board
             
             
-            self.play_step()
+            self.play_step(window)
 
         # Quit Pygame
         
