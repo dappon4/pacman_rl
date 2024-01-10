@@ -6,6 +6,7 @@ class Agent:
         self.y = 0
         self.prev_x = 0
         self.prev_y = 0
+        self.speed = 100
     
     def get_move(self, legal_moves):
         move = [0, 0, 0, 0]

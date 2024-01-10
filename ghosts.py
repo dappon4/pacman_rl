@@ -50,3 +50,43 @@ class Ghost(Agent):
         # Return the path or other desired output
         pass
     
+class Blinky(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 13
+        self.y = 11
+    
+    def get_move(self, legal_moves):
+        # Return the path or other desired output
+        pass
+
+class Pinky(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 13
+        self.y = 15
+    
+    def get_move(self, legal_moves):
+        # Return the path or other desired output
+        pass
+    
+class Inky(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 11
+        self.y = 15
+    
+    def get_move(self, legal_moves):
+        # Return the path or other desired output
+        pass
+    
+class Clyde(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 15
+        self.y = 15
+    
+    def get_move(self, legal_moves):
+        # Return the path or other desired output
+        pass
+    

@@ -188,7 +188,7 @@ class PacmanGame:
         window = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Pacman Game")
         
-
+        # Draw the board
         for row in range(len(self.board)):
                 for col in range(len(self.board[row])):
                     if self.board[row][col] == 1:
