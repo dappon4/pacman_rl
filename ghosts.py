@@ -1,12 +1,8 @@
-class Ghost:
-    def __init__(self) -> None:
-        self.x
-        self.y
-    
-    def find_path(self, board, target):
-        pass
+from agent import Agent
 
-class Pinky(Ghost):
+class Ghost(Agent):
     def __init__(self) -> None:
-        pass
+        super().__init__()
+        self.x = 0
+        self.y = 0
     
