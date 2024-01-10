@@ -169,16 +169,14 @@ class PacmanGame:
             for ghost in self.ghosts:
                 ghost.move(self.board, self.pacman)
                 """
-        
-        
-        
+
         move = self.pacman.get_move(self.get_legal_moves(self.pacman,self.board))
         self.move_agent(self.pacman,move)
         
         if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
             COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
             self.score += 10
-            print(self.score)
+        
         self.display_score(window)
         self.update_window(window)
         self.clock.tick(GAME_SPEED)
@@ -209,17 +207,9 @@ class PacmanGame:
                 if event.type == pygame.QUIT:
                     running = False
 
-            # Add code here to update and render the game board
-            
-            
             self.play_step(window)
-
-        # Quit Pygame
-        
         pygame.quit()
-
-
-# Create an instance of the PacmanGame class
+        
 
 if __name__ == "__main__":
     pygame.init()
