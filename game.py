@@ -1,7 +1,7 @@
 import pygame
 import time
 #from ghosts import Blinky, Pinky, Inky, Clyde
-#from pacman import Pacman
+from Pacman import Pacman
 
 
 
@@ -95,11 +95,12 @@ class PacmanGame:
         self.height = window_height
         self.score = 0
         self.clock = pygame.time.Clock()
+        self.pacman = Pacman()
         """self.blinky = Blinky()
         self.pinky = Pinky()
         self.inky = Inky()
         self.clyde = Clyde()
-        self.pacman = Pacman()
+        
         
         self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde]"""
         
@@ -126,11 +127,23 @@ class PacmanGame:
         
         return moves
     
+    def draw_coockies(self,window):
+        cell_size = BLOCK_SIZE
+        for coockie in COOCKIES_SET:
+            pygame.draw.circle(window, (255, 255, 0), (coockie[0] * cell_size + cell_size // 2, coockie[1] * cell_size + cell_size // 2), cell_size // 5)
+    
+    def draw_pacman(self,window):
+        cell_size = BLOCK_SIZE
+        pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * cell_size, self.pacman.prev_y * cell_size, cell_size, cell_size))
+        pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * cell_size + cell_size // 2, self.pacman.y * cell_size + cell_size // 2), cell_size // 2)
+    
     def update_window(self, window, cell_size):
-            for coockie in COOCKIES_SET:
-                pygame.draw.circle(window, (255, 255, 0), (coockie[0] * cell_size + cell_size // 2, coockie[1] * cell_size + cell_size // 2), cell_size // 5)
-
-            pygame.display.update()
+        self.draw_coockies(window)
+        self.draw_pacman(window)
+        
+        pygame.display.flip()
+    
+    
     
     def play_step(self,window):
         """self.pacman.move()
@@ -139,6 +152,8 @@ class PacmanGame:
             for ghost in self.ghosts:
                 ghost.move(self.board, self.pacman)
                 """
+        self.pacman.move(self.get_legal_moves(self.pacman,self.board))
+        
             
         self.update_window(window, BLOCK_SIZE)
             
