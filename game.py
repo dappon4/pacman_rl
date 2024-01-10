@@ -3,9 +3,6 @@ import time
 #from ghosts import Blinky, Pinky, Inky, Clyde
 from Pacman import Pacman
 
-
-
-
 BOARD =[
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -141,7 +138,12 @@ class PacmanGame:
         
         pygame.display.flip()
     
-    
+    def display_score(self,window):
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render(f'Score: {self.score}', True, (255, 255, 255), (0, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (650, self.height // 2)
+        window.blit(text, textRect)
     
     def play_step(self,window):
         """self.pacman.move()
@@ -150,10 +152,17 @@ class PacmanGame:
             for ghost in self.ghosts:
                 ghost.move(self.board, self.pacman)
                 """
+        
+        
+        
         self.pacman.move(self.get_legal_moves(self.pacman,self.board))
-
+        
+        if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
+            COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
+            self.score += 10
+            print(self.score)
+        self.display_score(window)
         self.update_window(window)
-            
         self.clock.tick(GAME_SPEED)
 
     def setup_board(self):
