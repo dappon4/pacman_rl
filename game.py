@@ -128,16 +128,14 @@ class PacmanGame:
         return moves
     
     def draw_coockies(self,window):
-        cell_size = BLOCK_SIZE
         for coockie in COOCKIES_SET:
-            pygame.draw.circle(window, (255, 255, 0), (coockie[0] * cell_size + cell_size // 2, coockie[1] * cell_size + cell_size // 2), cell_size // 5)
+            pygame.draw.circle(window, (255, 255, 0), (coockie[0] * BLOCK_SIZE + BLOCK_SIZE // 2, coockie[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
     
     def draw_pacman(self,window):
-        cell_size = BLOCK_SIZE
-        pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * cell_size, self.pacman.prev_y * cell_size, cell_size, cell_size))
-        pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * cell_size + cell_size // 2, self.pacman.y * cell_size + cell_size // 2), cell_size // 2)
+        pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * BLOCK_SIZE + BLOCK_SIZE // 2, self.pacman.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
-    def update_window(self, window, cell_size):
+    def update_window(self, window):
         self.draw_coockies(window)
         self.draw_pacman(window)
         
@@ -153,9 +151,8 @@ class PacmanGame:
                 ghost.move(self.board, self.pacman)
                 """
         self.pacman.move(self.get_legal_moves(self.pacman,self.board))
-        
-            
-        self.update_window(window, BLOCK_SIZE)
+
+        self.update_window(window)
             
         self.clock.tick(GAME_SPEED)
 
@@ -166,16 +163,15 @@ class PacmanGame:
         window = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Pacman Game")
         
-        cell_size = BLOCK_SIZE
 
         for row in range(len(self.board)):
                 for col in range(len(self.board[row])):
                     if self.board[row][col] == 1:
-                        pygame.draw.rect(window, (0, 0, 255), (col * cell_size, row * cell_size, cell_size, cell_size))
+                        pygame.draw.rect(window, (0, 0, 255), (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
                     elif self.board[row][col] == 2:
-                        pygame.draw.rect(window, (255, 0, 0), (col * cell_size, row * cell_size, cell_size, cell_size))
+                        pygame.draw.rect(window, (255, 0, 0), (col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
                     elif self.board[row][col] == 3:
-                        pygame.draw.circle(window, (255, 0, 255), (col * cell_size + cell_size // 2, row * cell_size + cell_size // 2), cell_size // 5)
+                        pygame.draw.circle(window, (255, 0, 255), (col * BLOCK_SIZE + BLOCK_SIZE // 2, row * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
         
         pygame.display.update()
         
