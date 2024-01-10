@@ -1,7 +1,7 @@
 import pygame
 import time
 #from ghosts import Blinky, Pinky, Inky, Clyde
-from Pacman import Pacman
+from pacman import Pacman
 
 BOARD =[
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
