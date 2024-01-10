@@ -110,6 +110,21 @@ class PacmanGame:
         self.board = BOARD
         self.coockies = COOCKIES
     
+    def get_legal_moves(self,agent,board):
+        moves = [1,1,1,1] # up, right, down, left
+        if 0 < agent.x < len(board[0]) - 1:
+            if board[agent.y][agent.x - 1] == 1:
+                moves[3] = 0
+            if board[agent.y][agent.x + 1] == 1:
+                moves[1] = 0
+        if 0 < agent.y < len(board) - 1:
+            if board[agent.y - 1][agent.x] == 1:
+                moves[0] = 0
+            if board[agent.y + 1][agent.x] == 1:
+                moves[2] = 0
+        
+        return moves
+    
     def update_window(self, window, cell_size):
             for row in range(len(self.board)):
                 for col in range(len(self.board[row])):
