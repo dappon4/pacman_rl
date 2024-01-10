@@ -145,6 +145,23 @@ class PacmanGame:
         textRect.center = (650, self.height // 2)
         window.blit(text, textRect)
     
+    def move_agent(self,agent,move):
+        agent.prev_x = agent.x
+        agent.prev_y = agent.y
+        if move == [1,0,0,0]:
+            agent.y -= 1
+        elif move == [0,1,0,0]:
+            agent.x += 1
+        elif move == [0,0,1,0]:
+            agent.y += 1
+        elif move == [0,0,0,1]:
+            agent.x -= 1
+
+        if agent.x == -1:
+            agent.x = len(self.board[0]) - 1
+        if agent.x == len(self.board[0]):
+            agent.x = 0
+    
     def play_step(self,window):
         """self.pacman.move()
             self.pacman.update()
@@ -155,7 +172,8 @@ class PacmanGame:
         
         
         
-        self.pacman.move(self.get_legal_moves(self.pacman,self.board))
+        move = self.pacman.get_move(self.get_legal_moves(self.pacman,self.board))
+        self.move_agent(self.pacman,move)
         
         if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
             COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
