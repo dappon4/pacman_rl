@@ -8,6 +8,7 @@ class Ghost(Agent):
         self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
         self.switch_dir = False
+        self.state = "normal"
     
     def get_opposite_move(self, move):
         map_counter_movement = {0:2,1:3,2:0,3:1}

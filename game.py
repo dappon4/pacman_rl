@@ -112,28 +112,35 @@ class PacmanGame:
     def get_legal_moves(self,agent):
         moves = [1,1,1,1] # up, right, down, left
         
+        # if agent is in between two blocks
         if agent.x % 1 == 0.5 or agent.y % 1 == 0.5:
             return agent.last_move
         else:
             agent.x = int(agent.x)
             agent.y = int(agent.y)
         
+        # check if agent is in a cell 
         assert type(agent.x) == int and type(agent.y) == int
         
+        # check if agent is in the spawn area of ghosts
         if self.board[agent.y][agent.x] == 2:
             return [1,0,0,0]
         
+        # if agent is not at the edge of the board
         if 0 < agent.x < len(self.board[0]) - 1:
             if self.board[agent.y][agent.x - 1] == 1:
                 moves[3] = 0
             if self.board[agent.y][agent.x + 1] == 1:
                 moves[1] = 0
+        
+        # if agent is not at the edge of the board
         if 0 < agent.y < len(self.board) - 1:
             if self.board[agent.y - 1][agent.x] == 1:
                 moves[0] = 0
             if self.board[agent.y + 1][agent.x] == 1 or self.board[agent.y - 1][agent.x] == 2:
                 moves[2] = 0
         
+        # ghosts cannot move backwards
         if isinstance(agent,Ghost):
             last_idx = agent.last_move.index(1)
             map_counter_movement = {0:2,1:3,2:0,3:1}
@@ -142,22 +149,30 @@ class PacmanGame:
         return moves
     
     def draw_misc(self,window):
+        # draw coockies
         for coockie in COOCKIES_SET:
             pygame.draw.circle(window, (255, 255, 0), (coockie[0] * BLOCK_SIZE + BLOCK_SIZE // 2, coockie[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
+        # draw powerups
         for powerup in POWERUPS_SET:
             pygame.draw.circle(window, (255, 0, 0), (powerup[0] * BLOCK_SIZE + BLOCK_SIZE // 2, powerup[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_pacman(self,window):
+        # draw pacman
         pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * BLOCK_SIZE + BLOCK_SIZE // 2, self.pacman.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_ghosts(self,window):
+        # if pacman is not powered up
         if self.pacman.powerup_duration == 0:
             for ghost, color in zip(self.ghosts,self.ghost_colors):
                 pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
+        
+        # if pacman is powered up
         elif self.pacman.powerup_duration > 0:
             for ghost in self.ghosts:
                 pygame.draw.circle(window, (0, 0, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2) 
+    
     def draw_black_rect(self,window):
+        # draw black rectangle to erase previous position of pacman and ghosts
         pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         for ghost in self.ghosts:
             pygame.draw.rect(window, (0, 0, 0), (ghost.prev_x * BLOCK_SIZE, ghost.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
@@ -177,50 +192,60 @@ class PacmanGame:
         window.blit(text, textRect)
     
     def move_agent(self,agent,move):
+        # save previous position of agent
         agent.prev_x = agent.x
         agent.prev_y = agent.y
-        if move == [1,0,0,0]:
+        
+        if move == [1,0,0,0]: # up
             agent.y -= 0.5
-        elif move == [0,1,0,0]:
+        elif move == [0,1,0,0]: # right
             agent.x += 0.5
-        elif move == [0,0,1,0]:
+        elif move == [0,0,1,0]: # down
             agent.y += 0.5
-        elif move == [0,0,0,1]:
+        elif move == [0,0,0,1]: # left
             agent.x -= 0.5
 
+        # if agent is at the left edge of the board
         if agent.x == -0.5:
             agent.x = len(self.board[0]) - 0.5
+        # if agent is at the right edge of the board
         elif agent.x == len(self.board[0]) - 0.5:
             agent.x = 0.5
+        
         agent.last_move = move
     
     def play_step(self,window):
-
+        # move pacman
         move = self.pacman.get_move(self.get_legal_moves(self.pacman))
         self.move_agent(self.pacman,move)
         
+        # if pacman is at the same position as a coockie
         if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
+            # remove coockie from set
             COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
             self.score += 10
         
+        # if pacman is at the same position as a powerup
         if (self.pacman.x,self.pacman.y) in POWERUPS_SET:
+            # remove powerup from set
             POWERUPS_SET.remove((self.pacman.x,self.pacman.y))
+            # set timer for powerup
             self.pacman.powerup_duration = POWERUP_DURATION
+            # switch direction of ghosts
             for ghost in self.ghosts:
                 ghost.switch_dir = True
         
-        if self.pacman.powerup_duration == 0:
-            for ghost in self.ghosts:
-                move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
-                self.move_agent(ghost,move)
-                
-        elif self.pacman.powerup_duration > 0:
-            for ghost in self.ghosts:
-                move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
-                self.move_agent(ghost,move)
-                
+        # if pacman is not powered up
+        for ghost in self.ghosts:
+            move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
+            self.move_agent(ghost,move)
+        
+        # if pacman is powered up   
+        if self.pacman.powerup_duration > 0:
+            # decrease powerup duration
             self.pacman.powerup_duration -= 1
             
+            # if powerup duration is over switch direction of ghosts
             if self.pacman.powerup_duration == 1:
                 for ghost in self.ghosts:
                     ghost.switch_dir = True
