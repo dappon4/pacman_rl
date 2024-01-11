@@ -55,6 +55,7 @@ class Blinky(Ghost):
         super().__init__()
         self.x = 13
         self.y = 11
+        self.speed = 105
     
     def get_move(self, legal_moves):
         # Return the path or other desired output
@@ -65,6 +66,7 @@ class Pinky(Ghost):
         super().__init__()
         self.x = 13
         self.y = 15
+        self.speed = 95
     
     def get_move(self, legal_moves):
         # Return the path or other desired output
@@ -75,6 +77,7 @@ class Inky(Ghost):
         super().__init__()
         self.x = 11
         self.y = 15
+        self.speed = 95
     
     def get_move(self, legal_moves):
         # Return the path or other desired output
@@ -85,6 +88,7 @@ class Clyde(Ghost):
         super().__init__()
         self.x = 15
         self.y = 15
+        self.speed = 95
     
     def get_move(self, legal_moves):
         # Return the path or other desired output

@@ -3,6 +3,8 @@ import time
 #from ghosts import Blinky, Pinky, Inky, Clyde
 from pacman import Pacman
 
+
+#board: 28 * 31, 560 * 620
 BOARD =[
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -111,6 +113,7 @@ class PacmanGame:
     
     def get_legal_moves(self,agent,board):
         moves = [1,1,1,1] # up, right, down, left
+        final_speed = agent.speed / agent.denominator
         if 0 < agent.x < len(board[0]) - 1:
             if board[agent.y][agent.x - 1] == 1:
                 moves[3] = 0
