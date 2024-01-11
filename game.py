@@ -150,9 +150,12 @@ class PacmanGame:
         pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * BLOCK_SIZE + BLOCK_SIZE // 2, self.pacman.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_ghosts(self,window):
-        for ghost, color in zip(self.ghosts,self.ghost_colors):
-            pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
-        
+        if self.pacman.powerup_duration == 0:
+            for ghost, color in zip(self.ghosts,self.ghost_colors):
+                pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
+        elif self.pacman.powerup_duration > 0:
+            for ghost in self.ghosts:
+                pygame.draw.circle(window, (0, 0, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2) 
     def draw_black_rect(self,window):
         pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         for ghost in self.ghosts:
@@ -203,7 +206,7 @@ class PacmanGame:
         
         if (self.pacman.x,self.pacman.y) in POWERUPS_SET:
             POWERUPS_SET.remove((self.pacman.x,self.pacman.y))
-            self.pacman.state = "powerup"
+            self.pacman.powerup_duration = POWERUP_DURATION
         
         if self.pacman.powerup_duration == 0:
             for ghost in self.ghosts:
