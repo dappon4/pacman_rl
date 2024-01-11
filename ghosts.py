@@ -59,6 +59,8 @@ class Blinky(Ghost):
         super().__init__()
         self.x = 13
         self.y = 12
+        self.spawn_x = self.x
+        self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
         if legal_moves == self.last_legal_moves:
@@ -72,7 +74,8 @@ class Pinky(Ghost):
         super().__init__()
         self.x = 14
         self.y = 12
-        self.last_legal_moves = [0, 0, 0, 0]
+        self.spawn_x = self.x
+        self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
         if legal_moves == self.last_legal_moves:
@@ -92,4 +95,36 @@ class Pinky(Ghost):
             elif pacman.last_move[3] == 1:
                 target_x -= 4
             return self.get_chase_moves(legal_moves, target_x, target_y)
+
+class Clyde(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 13
+        self.y = 13
+        self.spawn_x = self.x
+        self.spawn_y = self.y
+    
+    def get_move(self, legal_moves,pacman):
+        if legal_moves == self.last_legal_moves:
+            return self.last_move
+        elif abs(self.x - pacman.x) + abs(self.y - pacman.y) > 8:
+            return self.get_scatter_moves(legal_moves)
+        else:
+            return self.get_chase_moves(legal_moves, pacman.x, pacman.y)
+
+class Inky(Ghost):
+    def __init__(self) -> None:
+        super().__init__()
+        self.x = 14
+        self.y = 13
+        self.spawn_x = self.x
+        self.spawn_y = self.y
+        self.frames_elapsed = 0
+        self.curr_agent = None
+    
+    def get_move(self, legal_moves,pacman):
+        if self.frames_elapsed == 0:
+            self.curr_agent = random.choice([Blinky(), Pinky(), Clyde()])
         
+        self.frames_elapsed = (self.frames_elapsed + 1) % 50
+        return self.curr_agent.get_move(legal_moves, pacman)

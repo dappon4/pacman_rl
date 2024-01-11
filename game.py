@@ -1,7 +1,7 @@
 import pygame
 import time
 from agent import Agent
-from ghosts import Ghost, Blinky, Pinky
+from ghosts import Ghost, Blinky, Pinky, Clyde, Inky
 from pacman import Pacman
 
 BOARD =[
@@ -96,13 +96,11 @@ class PacmanGame:
         self.pacman = Pacman()
         self.blinky = Blinky()
         self.pinky = Pinky()
-        """
-        self.inky = Inky()
         self.clyde = Clyde()
-        """
+        self.inky = Inky()
         
-        self.ghosts = [self.blinky, self.pinky]
-        self.ghost_colors = [(255,0,0),(255,0,180)]
+        self.ghosts = [self.blinky, self.pinky,self.clyde,self.inky]
+        self.ghost_colors = [(255,0,0),(255,0,180),(255,165,0),(173,216,230)]
         
         
         
