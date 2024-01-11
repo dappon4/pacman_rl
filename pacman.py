@@ -12,6 +12,9 @@ class Pacman(Agent):
         self.next_move = [0, 1, 0, 0]
     
     def get_move(self, legal_moves):
+        return self.get_player_move(legal_moves)
+    
+    def get_player_move(self, legal_moves):
         move = [0, 0, 0, 0]
         idx = self.next_move.index(1)
         if legal_moves[idx] != 1:
