@@ -8,7 +8,9 @@ class Ghost(Agent):
         self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
     
-
+    def __str__(self) -> str:
+        return self.__class__.__name__ + f"({self.x}, {self.y})"
+    
     def get_frightened_move(self, legal_moves):
         pass
 
@@ -21,7 +23,6 @@ class Ghost(Agent):
         move_idx = random.choice(legal_idx)
         
         move[move_idx] = 1
-        self.last_move = move
         self.last_legal_moves = legal_moves
         return move
 
@@ -48,7 +49,7 @@ class Ghost(Agent):
                 if abs(self.y - target_y) + abs(self.x - 1 - target_x) < min_dist:
                     min_dist = abs(self.y - target_y) + abs(self.x - 1 - target_x)
                     move = [0,0,0,1]
-        self.last_move = move
+
         self.last_legal_moves = legal_moves
         return move
 
@@ -123,8 +124,17 @@ class Inky(Ghost):
         self.curr_agent = None
     
     def get_move(self, legal_moves,pacman):
+        print(self.curr_agent)
+        print(f"legal moves: {legal_moves}")
+        print(f"last move: {self.last_move}")
+        print("")
+        
         if self.frames_elapsed == 0:
             self.curr_agent = random.choice([Blinky(), Pinky(), Clyde()])
-        
+        self.curr_agent.x = self.x
+        self.curr_agent.y = self.y
+        self.curr_agent.last_move = self.last_move
+        self.curr_agent.last_legal_moves = self.last_legal_moves
+            
         self.frames_elapsed = (self.frames_elapsed + 1) % 50
         return self.curr_agent.get_move(legal_moves, pacman)

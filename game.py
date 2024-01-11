@@ -178,6 +178,8 @@ class PacmanGame:
             agent.x = len(self.board[0]) - 1
         if agent.x == len(self.board[0]):
             agent.x = 0
+        
+        agent.last_move = move
     
     def play_step(self,window):
         """self.pacman.move()
