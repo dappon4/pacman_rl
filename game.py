@@ -207,7 +207,7 @@ class PacmanGame:
     def setup_board(self):
         # Set up the game window
         window_width = 800
-        window_height = 600
+        window_height = 700
         window = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption("Pacman Game")
         

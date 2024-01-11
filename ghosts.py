@@ -124,10 +124,6 @@ class Inky(Ghost):
         self.curr_agent = None
     
     def get_move(self, legal_moves,pacman):
-        print(self.curr_agent)
-        print(f"legal moves: {legal_moves}")
-        print(f"last move: {self.last_move}")
-        print("")
         
         if self.frames_elapsed == 0:
             self.curr_agent = random.choice([Blinky(), Pinky(), Clyde()])
