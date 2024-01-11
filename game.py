@@ -82,7 +82,7 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 BLOCK_SIZE = 20
 
-GAME_SPEED = 60
+GAME_SPEED = 10
 
 
 class PacmanGame:
@@ -112,22 +112,26 @@ class PacmanGame:
         self.board = BOARD
         self.coockies = COOCKIES
     
-    def get_legal_moves(self,agent,board):
+    def get_legal_moves(self,agent):
         moves = [1,1,1,1] # up, right, down, left
-        if 0 < agent.x < len(board[0]) - 1:
-            if board[agent.y][agent.x - 1] == 1:
+        if self.board[agent.y][agent.x] == 2:
+            return [1,0,0,0]
+        
+        if 0 < agent.x < len(self.board[0]) - 1:
+            if self.board[agent.y][agent.x - 1] == 1:
                 moves[3] = 0
-            if board[agent.y][agent.x + 1] == 1:
+            if self.board[agent.y][agent.x + 1] == 1:
                 moves[1] = 0
-        if 0 < agent.y < len(board) - 1:
-            if board[agent.y - 1][agent.x] == 1:
+        if 0 < agent.y < len(self.board) - 1:
+            if self.board[agent.y - 1][agent.x] == 1:
                 moves[0] = 0
-            if board[agent.y + 1][agent.x] == 1:
+            if self.board[agent.y + 1][agent.x] == 1 or self.board[agent.y - 1][agent.x] == 2:
                 moves[2] = 0
         
         if isinstance(agent,Ghost):
             last_idx = agent.last_move.index(1)
-            moves[last_idx] = 0
+            map_counter_movement = {0:2,1:3,2:0,3:1}
+            moves[map_counter_movement[last_idx]] = 0
         
         return moves
     
@@ -185,7 +189,7 @@ class PacmanGame:
                 ghost.move(self.board, self.pacman)
                 """
 
-        move = self.pacman.get_move(self.get_legal_moves(self.pacman,self.board))
+        move = self.pacman.get_move(self.get_legal_moves(self.pacman))
         self.move_agent(self.pacman,move)
         
         if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
@@ -193,7 +197,7 @@ class PacmanGame:
             self.score += 10
         
         for ghost in self.ghosts:
-            move = ghost.get_move(self.get_legal_moves(ghost,self.board),self.pacman)
+            move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
             self.move_agent(ghost,move)
         
         self.display_score(window)
