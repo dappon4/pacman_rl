@@ -128,6 +128,8 @@ class PacmanGame:
         
         # check if agent is in the spawn area of ghosts
         if self.board[agent.y][agent.x] == 2:
+            if isinstance(agent,Ghost):
+                agent.state = "alive"
             return [1,0,0,0]
         
         # if agent is not at the edge of the board
@@ -168,12 +170,18 @@ class PacmanGame:
         # if pacman is not powered up
         if self.pacman.powerup_duration == 0:
             for ghost, color in zip(self.ghosts,self.ghost_colors):
-                pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
+                if ghost.state == "alive":
+                    pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
+                elif ghost.state == "eaten":
+                    pygame.draw.circle(window, (255, 255, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 4)
         
         # if pacman is powered up
         elif self.pacman.powerup_duration > 0:
             for ghost in self.ghosts:
-                pygame.draw.circle(window, (0, 0, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2) 
+                if ghost.state == "alive":
+                    pygame.draw.circle(window, (0, 0, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2) 
+                elif ghost.state == "eaten":
+                    pygame.draw.circle(window, (255, 255, 255), (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 4)
     
     def draw_black_rect(self,window):
         # draw black rectangle to erase previous position of pacman and ghosts
@@ -241,17 +249,19 @@ class PacmanGame:
             self.pacman.powerup_duration = POWERUP_DURATION
             # switch direction of ghosts
             for ghost in self.ghosts:
-                ghost.switch_dir = True
+                if ghost.state == "alive":
+                    ghost.switch_dir = True
         
         for ghost in self.ghosts:
             move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
             self.move_agent(ghost,move)
             if (self.pacman.x,self.pacman.y) == (ghost.x,ghost.y):
-                if self.pacman.powerup_duration == 0:
+                if self.pacman.powerup_duration == 0 and ghost.state == "alive":
                     return True
                 else:
                     self.score += 100
                     # TODO: reset ghost position
+                    ghost.state = "eaten"
         
         # if pacman is powered up   
         if self.pacman.powerup_duration > 0:
@@ -261,7 +271,8 @@ class PacmanGame:
             # if powerup duration is over switch direction of ghosts
             if self.pacman.powerup_duration == 1:
                 for ghost in self.ghosts:
-                    ghost.switch_dir = True
+                    if ghost.state == "alive":
+                        ghost.switch_dir = True
         
         self.display_score(window)
         self.update_window(window)

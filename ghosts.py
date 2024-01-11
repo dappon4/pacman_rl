@@ -8,7 +8,7 @@ class Ghost(Agent):
         self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
         self.switch_dir = False
-        self.state = "normal"
+        self.state = "alive"
     
     def get_opposite_move(self, move):
         map_counter_movement = {0:2,1:3,2:0,3:1}
@@ -58,6 +58,10 @@ class Ghost(Agent):
 
         self.last_legal_moves = legal_moves
         return move
+    
+    def return_to_spawn(self,legal_moves):
+        #TODO: implement this
+        return self.get_chase_moves(legal_moves, self.spawn_x, self.spawn_y)
 
     
  
@@ -70,7 +74,9 @@ class Blinky(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if self.switch_dir:
+        if self.state == "eaten":
+            return self.return_to_spawn(legal_moves)
+        elif self.switch_dir:
             self.switch_dir = False
             return self.get_opposite_move(self.last_move)
         elif pacman.powerup_duration > 0:
@@ -90,7 +96,9 @@ class Pinky(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if self.switch_dir:
+        if self.state == "eaten":
+            return self.return_to_spawn(legal_moves)
+        elif self.switch_dir:
             self.switch_dir = False
             return self.get_opposite_move(self.last_move)
         elif pacman.powerup_duration > 0:
@@ -122,7 +130,9 @@ class Clyde(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if self.switch_dir:
+        if self.state == "eaten":
+            return self.return_to_spawn(legal_moves)
+        elif self.switch_dir:
             self.switch_dir = False
             return self.get_opposite_move(self.last_move)
         elif pacman.powerup_duration > 0:
@@ -153,9 +163,13 @@ class Inky(Ghost):
         self.curr_agent.y = self.y
         self.curr_agent.last_move = self.last_move
         self.curr_agent.last_legal_moves = self.last_legal_moves
-        self.curr_agent.switch_dir = self.switch_dir
         self.frames_elapsed = (self.frames_elapsed + 1) % 50
         
+        self.curr_agent.switch_dir = self.switch_dir
+        self.curr_agent.state = self.state
+        
         move = self.curr_agent.get_move(legal_moves, pacman)
+        
         self.switch_dir = self.curr_agent.switch_dir
+        self.state = self.curr_agent.state
         return move
