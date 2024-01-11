@@ -44,6 +44,7 @@ class Blinky(Ghost):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
         min_dist = 10000
         move = [0,0,0,0]
+        
         for i in legal_idx:
             # up, right, down, left   
             if i == 0:
@@ -86,23 +87,35 @@ class Pinky(Ghost):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
         min_dist = 10000
         move = [0,0,0,0]
+        target_x = pacman.x
+        target_y = pacman.y
+        
+        if pacman.last_move[0] == 1:
+            target_y -= 4
+        elif pacman.last_move[1] == 1:
+            target_x += 4
+        elif pacman.last_move[2] == 1:
+            target_y += 4
+        elif pacman.last_move[3] == 1:
+            target_x -= 4
+            
         for i in legal_idx:
             # up, right, down, left   
             if i == 0:
-                if abs(self.y - 4 - pacman.y) + abs(self.x - pacman.x) < min_dist:
-                    min_dist = abs(self.y - 4 - pacman.y) + abs(self.x - pacman.x)
+                if abs(self.y - 4 - target_y) + abs(self.x - target_x) < min_dist:
+                    min_dist = abs(self.y - 4 - target_y) + abs(self.x - target_x)
                     move = [1,0,0,0]
             elif i == 1:
-                if abs(self.y - pacman.y) + abs(self.x + 4 - pacman.x) < min_dist:
-                    min_dist = abs(self.y - pacman.y) + abs(self.x + 4 - pacman.x)
+                if abs(self.y - target_y) + abs(self.x + 4 - target_x) < min_dist:
+                    min_dist = abs(self.y - target_y) + abs(self.x + 4 - target_x)
                     move = [0,1,0,0]
             elif i == 2:
-                if abs(self.y + 4 - pacman.y) + abs(self.x - pacman.x) < min_dist:
-                    min_dist = abs(self.y + 4 - pacman.y) + abs(self.x - pacman.x)
+                if abs(self.y + 4 - target_y) + abs(self.x - target_x) < min_dist:
+                    min_dist = abs(self.y + 4 - target_y) + abs(self.x - target_x)
                     move = [0,0,1,0]
             elif i == 3:
-                if abs(self.y - pacman.y) + abs(self.x - 4 - pacman.x) < min_dist:
-                    min_dist = abs(self.y - pacman.y) + abs(self.x - 4 - pacman.x)
+                if abs(self.y - target_y) + abs(self.x - 4 - target_x) < min_dist:
+                    min_dist = abs(self.y - target_y) + abs(self.x - 4 - target_x)
                     move = [0,0,0,1]
         self.last_move = move
         self.last_legal_moves = legal_moves
