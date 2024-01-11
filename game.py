@@ -38,7 +38,7 @@ BOARD =[
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-COOCKIES = [
+COOKIES = [
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
  [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
@@ -72,10 +72,12 @@ COOCKIES = [
  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-COOCKIES_SET = set([(i,j) for j in range(len(COOCKIES)) for i in range(len(COOCKIES[0])) if COOCKIES[j][i] == 0])
+COOKIES_SET_TEST = {(1,1)}
+
+COOKIES_SET = set([(i,j) for j in range(len(COOKIES)) for i in range(len(COOKIES[0])) if COOKIES[j][i] == 0])
 POWERUPS_SET = set([(i,j) for j in range(len(BOARD)) for i in range(len(BOARD[0])) if BOARD[j][i] == 3])
 #1: wall
-#0: coockie
+#0: cookie
 #2: ghost spawn
 #3: power up
 
@@ -90,7 +92,8 @@ POWERUP_DURATION = 50
 class PacmanGame:
     def __init__(self, winndows_width=WINDOW_WIDTH, window_height=WINDOW_HEIGHT):
         self.board = BOARD
-        self.coockies = COOCKIES
+        self.cookies = COOKIES_SET
+        self.powerups = POWERUPS_SET
         self.width = winndows_width
         self.height = window_height
         self.score = 0
@@ -107,7 +110,8 @@ class PacmanGame:
     def reset(self):
         self.score = 0
         self.board = BOARD
-        self.coockies = COOCKIES
+        self.cookies = COOKIES_SET
+        self.powerups = POWERUPS_SET
     
     def get_legal_moves(self,agent):
         moves = [1,1,1,1] # up, right, down, left
@@ -149,11 +153,11 @@ class PacmanGame:
         return moves
     
     def draw_misc(self,window):
-        # draw coockies
-        for coockie in COOCKIES_SET:
-            pygame.draw.circle(window, (255, 255, 0), (coockie[0] * BLOCK_SIZE + BLOCK_SIZE // 2, coockie[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
+        # draw cookies
+        for cookie in self.cookies:
+            pygame.draw.circle(window, (255, 255, 0), (cookie[0] * BLOCK_SIZE + BLOCK_SIZE // 2, cookie[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
         # draw powerups
-        for powerup in POWERUPS_SET:
+        for powerup in self.powerups:
             pygame.draw.circle(window, (255, 0, 0), (powerup[0] * BLOCK_SIZE + BLOCK_SIZE // 2, powerup[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_pacman(self,window):
@@ -219,26 +223,35 @@ class PacmanGame:
         move = self.pacman.get_move(self.get_legal_moves(self.pacman))
         self.move_agent(self.pacman,move)
         
-        # if pacman is at the same position as a coockie
-        if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
-            # remove coockie from set
-            COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
+        # if pacman is at the same position as a cookie
+        if (self.pacman.x,self.pacman.y) in self.cookies:
+            # remove cookie from set
+            self.cookies.remove((self.pacman.x,self.pacman.y))
+            
+            # if all cookies are eaten end game
+            if len(self.cookies) == 0:
+                return True
             self.score += 10
         
         # if pacman is at the same position as a powerup
-        if (self.pacman.x,self.pacman.y) in POWERUPS_SET:
+        if (self.pacman.x,self.pacman.y) in self.powerups:
             # remove powerup from set
-            POWERUPS_SET.remove((self.pacman.x,self.pacman.y))
+            self.powerups.remove((self.pacman.x,self.pacman.y))
             # set timer for powerup
             self.pacman.powerup_duration = POWERUP_DURATION
             # switch direction of ghosts
             for ghost in self.ghosts:
                 ghost.switch_dir = True
         
-        # if pacman is not powered up
         for ghost in self.ghosts:
             move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
             self.move_agent(ghost,move)
+            if (self.pacman.x,self.pacman.y) == (ghost.x,ghost.y):
+                if self.pacman.powerup_duration == 0:
+                    return True
+                else:
+                    self.score += 100
+                    # TODO: reset ghost position
         
         # if pacman is powered up   
         if self.pacman.powerup_duration > 0:
@@ -254,6 +267,8 @@ class PacmanGame:
         self.update_window(window)
         self.clock.tick(GAME_SPEED)
 
+        return False
+    
     def setup_board(self):
         # Set up the game window
         window_width = 800
@@ -274,6 +289,7 @@ class PacmanGame:
         pygame.display.update()
         
         # Game loop
+        done = False
         running = True
         while running:
             for event in pygame.event.get():
@@ -289,7 +305,11 @@ class PacmanGame:
                     elif event.key == pygame.K_LEFT:
                         self.pacman.next_move = [0,0,0,1]
 
-            self.play_step(window)
+            done = self.play_step(window)
+            if done:
+                break
+        
+        time.sleep(2)
         pygame.quit()
         
 
