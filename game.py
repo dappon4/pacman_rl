@@ -118,6 +118,7 @@ class PacmanGame:
             agent.x = int(agent.x)
             agent.y = int(agent.y)
         
+        assert type(agent.x) == int and type(agent.y) == int
         if self.board[agent.y][agent.x] == 2:
             return [1,0,0,0]
         
@@ -246,6 +247,15 @@ class PacmanGame:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.pacman.next_move = [1,0,0,0]
+                    elif event.key == pygame.K_RIGHT:
+                        self.pacman.next_move = [0,1,0,0]
+                    elif event.key == pygame.K_DOWN:
+                        self.pacman.next_move = [0,0,1,0]
+                    elif event.key == pygame.K_LEFT:
+                        self.pacman.next_move = [0,0,0,1]
 
             self.play_step(window)
         pygame.quit()
