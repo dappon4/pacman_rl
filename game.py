@@ -119,6 +119,7 @@ class PacmanGame:
             agent.y = int(agent.y)
         
         assert type(agent.x) == int and type(agent.y) == int
+        
         if self.board[agent.y][agent.x] == 2:
             return [1,0,0,0]
         
@@ -166,7 +167,6 @@ class PacmanGame:
         self.draw_misc(window)
         self.draw_ghosts(window)
         self.draw_pacman(window)
-        print(self.inky)
         pygame.display.flip()
     
     def display_score(self,window):
@@ -190,9 +190,8 @@ class PacmanGame:
 
         if agent.x == -0.5:
             agent.x = len(self.board[0]) - 0.5
-        if agent.x == len(self.board[0]) - 0.5:
+        elif agent.x == len(self.board[0]) - 0.5:
             agent.x = 0.5
-        
         agent.last_move = move
     
     def play_step(self,window):
