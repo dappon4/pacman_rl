@@ -8,9 +8,6 @@ class Ghost(Agent):
         self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
     
-    def __str__(self) -> str:
-        return self.__class__.__name__ + f"({self.x}, {self.y})"
-    
     def get_frightened_move(self, legal_moves):
         pass
 

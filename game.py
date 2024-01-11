@@ -112,6 +112,13 @@ class PacmanGame:
     
     def get_legal_moves(self,agent):
         moves = [1,1,1,1] # up, right, down, left
+        
+        if agent.x % 1 == 0.5 or agent.y % 1 == 0.5:
+            return agent.last_move
+        else:
+            agent.x = int(agent.x)
+            agent.y = int(agent.y)
+        
         if self.board[agent.y][agent.x] == 2:
             return [1,0,0,0]
         
@@ -152,7 +159,7 @@ class PacmanGame:
         self.draw_ghosts(window)
         self.draw_coockies(window)
         self.draw_pacman(window)
-        
+        print(self.pacman)
         pygame.display.flip()
     
     def display_score(self,window):
@@ -166,18 +173,18 @@ class PacmanGame:
         agent.prev_x = agent.x
         agent.prev_y = agent.y
         if move == [1,0,0,0]:
-            agent.y -= 1
+            agent.y -= 0.5
         elif move == [0,1,0,0]:
-            agent.x += 1
+            agent.x += 0.5
         elif move == [0,0,1,0]:
-            agent.y += 1
+            agent.y += 0.5
         elif move == [0,0,0,1]:
-            agent.x -= 1
+            agent.x -= 0.5
 
-        if agent.x == -1:
-            agent.x = len(self.board[0]) - 1
-        if agent.x == len(self.board[0]):
-            agent.x = 0
+        if agent.x == -0.5:
+            agent.x = len(self.board[0]) - 0.5
+        if agent.x == len(self.board[0]) - 0.5:
+            agent.x = 0.5
         
         agent.last_move = move
     

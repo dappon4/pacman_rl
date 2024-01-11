@@ -8,6 +8,9 @@ class Agent:
         self.prev_x = 0
         self.prev_y = 0
     
+    def __str__(self) -> str:
+        return self.__class__.__name__ + f"({self.x}, {self.y})"
+    
     def get_move(self, legal_moves):
         move = [0, 0, 0, 0]
         indices_with_1 = [i for i, val in enumerate(legal_moves) if val == 1]
