@@ -153,6 +153,8 @@ class Inky(Ghost):
         self.curr_agent.last_move = self.last_move
         self.curr_agent.last_legal_moves = self.last_legal_moves
         self.curr_agent.switch_dir = self.switch_dir
-            
         self.frames_elapsed = (self.frames_elapsed + 1) % 50
-        return self.curr_agent.get_move(legal_moves, pacman)
+        
+        move = self.curr_agent.get_move(legal_moves, pacman)
+        self.switch_dir = self.curr_agent.switch_dir
+        return move
