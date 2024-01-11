@@ -9,16 +9,15 @@ class Ghost(Agent):
         self.last_legal_moves = [0, 0, 0, 0]
         self.switch_dir = False
     
-    def get_frightened_move(self, legal_moves):
+    def get_opposite_move(self, move):
         map_counter_movement = {0:2,1:3,2:0,3:1}
-        if self.switch_dir:
-            self.switch_dir = False
-            idx = map_counter_movement[self.last_move.index(1)]
-            move = [0,0,0,0]
-            move[idx] = 1
-            return move
-        else:
-            return self.get_scatter_moves(legal_moves)
+        idx = map_counter_movement[move.index(1)]
+        new_move = [0,0,0,0]
+        new_move[idx] = 1
+        return new_move
+    
+    def get_frightened_move(self, legal_moves):
+        return self.get_scatter_moves(legal_moves)
 
     def get_scatter_moves(self, legal_moves):
         if legal_moves == self.last_legal_moves:
@@ -70,7 +69,12 @@ class Blinky(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if legal_moves == self.last_legal_moves:
+        if self.switch_dir:
+            self.switch_dir = False
+            return self.get_opposite_move(self.last_move)
+        elif pacman.powerup_duration > 0:
+            return self.get_frightened_move(legal_moves)
+        elif legal_moves == self.last_legal_moves:
             return self.last_move
         else:
             return self.get_chase_moves(legal_moves, pacman.x, pacman.y)
@@ -85,7 +89,12 @@ class Pinky(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if legal_moves == self.last_legal_moves:
+        if self.switch_dir:
+            self.switch_dir = False
+            return self.get_opposite_move(self.last_move)
+        elif pacman.powerup_duration > 0:
+            return self.get_frightened_move(legal_moves)
+        elif legal_moves == self.last_legal_moves:
             return self.last_move
         elif abs(self.x - pacman.x) + abs(self.y - pacman.y) > 8:
             return self.get_scatter_moves(legal_moves)
@@ -112,7 +121,12 @@ class Clyde(Ghost):
         self.spawn_y = self.y
     
     def get_move(self, legal_moves,pacman):
-        if legal_moves == self.last_legal_moves:
+        if self.switch_dir:
+            self.switch_dir = False
+            return self.get_opposite_move(self.last_move)
+        elif pacman.powerup_duration > 0:
+            return self.get_frightened_move(legal_moves)
+        elif legal_moves == self.last_legal_moves:
             return self.last_move
         elif abs(self.x - pacman.x) + abs(self.y - pacman.y) > 8:
             return self.get_scatter_moves(legal_moves)
@@ -133,10 +147,12 @@ class Inky(Ghost):
         
         if self.frames_elapsed == 0:
             self.curr_agent = random.choice([Blinky(), Pinky(), Clyde()])
+        
         self.curr_agent.x = self.x
         self.curr_agent.y = self.y
         self.curr_agent.last_move = self.last_move
         self.curr_agent.last_legal_moves = self.last_legal_moves
+        self.curr_agent.switch_dir = self.switch_dir
             
         self.frames_elapsed = (self.frames_elapsed + 1) % 50
         return self.curr_agent.get_move(legal_moves, pacman)

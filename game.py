@@ -166,7 +166,7 @@ class PacmanGame:
         self.draw_misc(window)
         self.draw_ghosts(window)
         self.draw_pacman(window)
-        print(self.pacman)
+        print(self.inky)
         pygame.display.flip()
     
     def display_score(self,window):
@@ -207,16 +207,21 @@ class PacmanGame:
         if (self.pacman.x,self.pacman.y) in POWERUPS_SET:
             POWERUPS_SET.remove((self.pacman.x,self.pacman.y))
             self.pacman.powerup_duration = POWERUP_DURATION
+            for ghost in self.ghosts:
+                ghost.switch_dir = True
         
         if self.pacman.powerup_duration == 0:
             for ghost in self.ghosts:
                 move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
                 self.move_agent(ghost,move)
+                
         elif self.pacman.powerup_duration > 0:
             for ghost in self.ghosts:
-                move = ghost.get_frightened_move(self.get_legal_moves(ghost))
+                move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
                 self.move_agent(ghost,move)
+                
             self.pacman.powerup_duration -= 1
+            
             if self.pacman.powerup_duration == 1:
                 for ghost in self.ghosts:
                     ghost.switch_dir = True
