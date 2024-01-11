@@ -199,9 +199,18 @@ class PacmanGame:
             COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
             self.score += 10
         
-        for ghost in self.ghosts:
-            move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
-            self.move_agent(ghost,move)
+        if (self.pacman.x,self.pacman.y) in POWERUPS_SET:
+            POWERUPS_SET.remove((self.pacman.x,self.pacman.y))
+            self.pacman.state = "powerup"
+        
+        if self.pacman.state == "normal":
+            for ghost in self.ghosts:
+                move = ghost.get_move(self.get_legal_moves(ghost),self.pacman)
+                self.move_agent(ghost,move)
+        elif self.pacman.state == "powerup":
+            for ghost in self.ghosts:
+                move = ghost.get_frightened_move(self.get_legal_moves(ghost))
+                self.move_agent(ghost,move)
         
         self.display_score(window)
         self.update_window(window)

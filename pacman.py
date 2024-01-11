@@ -7,3 +7,4 @@ class Pacman(Agent):
         self.y = 22
         self.spawn_x = self.x
         self.spawn_y = self.y
+        self.state = "normal"

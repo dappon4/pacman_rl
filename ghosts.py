@@ -7,9 +7,18 @@ class Ghost(Agent):
         self.x = 13
         self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
+        self.switch_dir = False
     
     def get_frightened_move(self, legal_moves):
-        pass
+        map_counter_movement = {0:2,1:3,2:0,3:1}
+        if self.switch_dir:
+            self.switch_dir = False
+            idx = map_counter_movement[self.last_move.index(1)]
+            move = [0,0,0,0]
+            move[idx] = 1
+            return move
+        else:
+            return self.get_scatter_moves(legal_moves)
 
     def get_scatter_moves(self, legal_moves):
         if legal_moves == self.last_legal_moves:

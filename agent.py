@@ -7,6 +7,7 @@ class Agent:
         self.last_move = [1,0,0,0]
         self.prev_x = 0
         self.prev_y = 0
+        self.state = None
     
     def __str__(self) -> str:
         return self.__class__.__name__ + f"({self.x}, {self.y})"
