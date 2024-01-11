@@ -1,4 +1,5 @@
 import random
+import pygame
 from agent import Agent
 class Pacman(Agent):
     def __init__(self) -> None:
@@ -7,4 +8,4 @@ class Pacman(Agent):
         self.y = 22
         self.spawn_x = self.x
         self.spawn_y = self.y
-        self.state = "normal"
+        self.powerup_duration = 0
