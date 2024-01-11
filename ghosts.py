@@ -4,9 +4,8 @@ import random
 class Ghost(Agent):
     def __init__(self) -> None:
         super().__init__()
-        self.x = 0
-        self.y = 0
-        self.last_move = [0,0,0,0]
+        self.x = 13
+        self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
     
 
@@ -31,8 +30,8 @@ class Ghost(Agent):
 class Blinky(Ghost):
     def __init__(self) -> None:
         super().__init__()
-        self.x = 0
-        self.y = 0
+        self.x = 13
+        self.y = 12
     
     def get_move(self, legal_moves,pacman):
         if legal_moves == self.last_legal_moves:
@@ -70,8 +69,8 @@ class Blinky(Ghost):
 class Pinky(Ghost):
     def __init__(self) -> None:
         super().__init__()
-        self.x = 0
-        self.y = 0
+        self.x = 12
+        self.y = 12
         self.last_legal_moves = [0, 0, 0, 0]
     
     def get_move(self, legal_moves,pacman):

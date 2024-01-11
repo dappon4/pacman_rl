@@ -1,7 +1,7 @@
 import pygame
 import time
-#from ghosts import Blinky, Pinky, Inky, Clyde
-from ghosts import Ghost
+from agent import Agent
+from ghosts import Ghost, Blinky, Pinky
 from pacman import Pacman
 
 BOARD =[
@@ -94,13 +94,15 @@ class PacmanGame:
         self.score = 0
         self.clock = pygame.time.Clock()
         self.pacman = Pacman()
-        """self.blinky = Blinky()
+        self.blinky = Blinky()
         self.pinky = Pinky()
+        """
         self.inky = Inky()
         self.clyde = Clyde()
+        """
         
-        
-        self.ghosts = [self.blinky, self.pinky, self.inky, self.clyde]"""
+        self.ghosts = [self.blinky, self.pinky]
+        self.ghost_colors = [(255,0,0),(255,0,180)]
         
         
         
@@ -137,7 +139,15 @@ class PacmanGame:
         pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * BLOCK_SIZE + BLOCK_SIZE // 2, self.pacman.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
+    def draw_ghosts(self,window):
+        for ghost in self.ghosts:
+            pygame.draw.rect(window, (0, 0, 0), (ghost.prev_x * BLOCK_SIZE, ghost.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        for ghost, color in zip(self.ghosts,self.ghost_colors):
+            pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
+        
+        
     def update_window(self, window):
+        self.draw_ghosts(window)
         self.draw_coockies(window)
         self.draw_pacman(window)
         
@@ -181,6 +191,10 @@ class PacmanGame:
         if (self.pacman.x,self.pacman.y) in COOCKIES_SET:
             COOCKIES_SET.remove((self.pacman.x,self.pacman.y))
             self.score += 10
+        
+        for ghost in self.ghosts:
+            move = ghost.get_move(self.get_legal_moves(ghost,self.board),self.pacman)
+            self.move_agent(ghost,move)
         
         self.display_score(window)
         self.update_window(window)
