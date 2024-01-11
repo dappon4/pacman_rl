@@ -13,7 +13,7 @@ class Ghost(Agent):
     def get_frightened_move(self, legal_moves):
         pass
 
-    def get_random_moves(self, legal_moves):
+    def get_scatter_moves(self, legal_moves):
         if legal_moves == self.last_legal_moves:
             return self.last_move
         
@@ -25,6 +25,8 @@ class Ghost(Agent):
         self.last_move = move
         self.last_legal_moves = legal_moves
         return move
+
+    
  
 class Blinky(Ghost):
     def __init__(self) -> None:
@@ -35,7 +37,10 @@ class Blinky(Ghost):
     def get_move(self, legal_moves,pacman):
         if legal_moves == self.last_legal_moves:
             return self.last_move
+        else:
+            return self.get_chase_moves(legal_moves, pacman)
         
+    def get_chase_moves(self, legal_moves, pacman):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
         min_dist = 10000
         move = [0,0,0,0]
@@ -71,8 +76,13 @@ class Pinky(Ghost):
     def get_move(self, legal_moves,pacman):
         if legal_moves == self.last_legal_moves:
             return self.last_move
-        if abs(self.x - pacman.x) + abs(self.y - pacman.y) > 8:
-            return self.get_random_moves(legal_moves)
+        elif abs(self.x - pacman.x) + abs(self.y - pacman.y) > 8:
+            return self.get_scatter_moves(legal_moves)
+        else:
+            return self.get_chase_moves(legal_moves, pacman)
+        
+    
+    def get_chase_moves(self, legal_moves, pacman):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
         min_dist = 10000
         move = [0,0,0,0]

@@ -1,6 +1,7 @@
 import pygame
 import time
 #from ghosts import Blinky, Pinky, Inky, Clyde
+from ghosts import Ghost
 from pacman import Pacman
 
 BOARD =[
@@ -121,6 +122,10 @@ class PacmanGame:
                 moves[0] = 0
             if board[agent.y + 1][agent.x] == 1:
                 moves[2] = 0
+        
+        if isinstance(agent,Ghost):
+            last_idx = agent.last_move.index(1)
+            moves[last_idx] = 0
         
         return moves
     
