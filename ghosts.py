@@ -91,5 +91,5 @@ class Pinky(Ghost):
                 target_y += 4
             elif pacman.last_move[3] == 1:
                 target_x -= 4
-            return self.get_chase_moves(legal_moves, tarfet_x, target_y)
+            return self.get_chase_moves(legal_moves, target_x, target_y)
         
