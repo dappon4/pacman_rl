@@ -73,6 +73,7 @@ COOCKIES = [
 ]
 
 COOCKIES_SET = set([(i,j) for j in range(len(COOCKIES)) for i in range(len(COOCKIES[0])) if COOCKIES[j][i] == 0])
+POWERUPS_SET = set([(i,j) for j in range(len(BOARD)) for i in range(len(BOARD[0])) if BOARD[j][i] == 3])
 #1: wall
 #0: coockie
 #2: ghost spawn
@@ -102,9 +103,6 @@ class PacmanGame:
         self.ghosts = [self.blinky, self.pinky,self.clyde,self.inky]
         self.ghost_colors = [(255,0,0),(255,0,180),(255,165,0),(173,216,230)]
         
-        
-        
-    
     def reset(self):
         self.score = 0
         self.board = BOARD
@@ -140,24 +138,28 @@ class PacmanGame:
         
         return moves
     
-    def draw_coockies(self,window):
+    def draw_misc(self,window):
         for coockie in COOCKIES_SET:
             pygame.draw.circle(window, (255, 255, 0), (coockie[0] * BLOCK_SIZE + BLOCK_SIZE // 2, coockie[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 5)
+        for powerup in POWERUPS_SET:
+            pygame.draw.circle(window, (255, 0, 0), (powerup[0] * BLOCK_SIZE + BLOCK_SIZE // 2, powerup[1] * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_pacman(self,window):
-        pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.circle(window, (255, 255, 0), (self.pacman.x * BLOCK_SIZE + BLOCK_SIZE // 2, self.pacman.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
     
     def draw_ghosts(self,window):
-        for ghost in self.ghosts:
-            pygame.draw.rect(window, (0, 0, 0), (ghost.prev_x * BLOCK_SIZE, ghost.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
         for ghost, color in zip(self.ghosts,self.ghost_colors):
             pygame.draw.circle(window, color, (ghost.x * BLOCK_SIZE + BLOCK_SIZE // 2, ghost.y * BLOCK_SIZE + BLOCK_SIZE // 2), BLOCK_SIZE // 2)
         
-        
+    def draw_black_rect(self,window):
+        pygame.draw.rect(window, (0, 0, 0), (self.pacman.prev_x * BLOCK_SIZE, self.pacman.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+        for ghost in self.ghosts:
+            pygame.draw.rect(window, (0, 0, 0), (ghost.prev_x * BLOCK_SIZE, ghost.prev_y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
+    
     def update_window(self, window):
+        self.draw_black_rect(window)
+        self.draw_misc(window)
         self.draw_ghosts(window)
-        self.draw_coockies(window)
         self.draw_pacman(window)
         print(self.pacman)
         pygame.display.flip()
@@ -189,12 +191,6 @@ class PacmanGame:
         agent.last_move = move
     
     def play_step(self,window):
-        """self.pacman.move()
-            self.pacman.update()
-            
-            for ghost in self.ghosts:
-                ghost.move(self.board, self.pacman)
-                """
 
         move = self.pacman.get_move(self.get_legal_moves(self.pacman))
         self.move_agent(self.pacman,move)
