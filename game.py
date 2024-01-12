@@ -92,8 +92,8 @@ POWERUP_DURATION = 50
 class PacmanGame:
     def __init__(self, winndows_width=WINDOW_WIDTH, window_height=WINDOW_HEIGHT):
         self.board = BOARD
-        self.cookies = COOKIES_SET
-        self.powerups = POWERUPS_SET
+        self.cookies = COOKIES_SET.copy()
+        self.powerups = POWERUPS_SET.copy()
         self.width = winndows_width
         self.height = window_height
         self.score = 0
@@ -107,11 +107,25 @@ class PacmanGame:
         self.ghosts = [self.blinky, self.pinky,self.clyde,self.inky]
         self.ghost_colors = [(255,0,0),(255,0,180),(255,165,0),(173,216,230)]
         
-    def reset(self):
+    def reset(self,window):
         self.score = 0
         self.board = BOARD
         self.cookies = COOKIES_SET
         self.powerups = POWERUPS_SET
+        
+        self.pacman.x = self.pacman.spawn_x
+        self.pacman.y = self.pacman.spawn_y
+        self.pacman.powerup_duration = 0
+        self.pacman.next_move = [1,0,0,0]
+        
+        for ghost in self.ghosts:
+            ghost.x = ghost.spawn_x
+            ghost.y = ghost.spawn_y
+            ghost.state = "alive"
+            ghost.switch_dir = False
+            ghost.last_legal_moves = [0,0,0,0]
+        
+        self.draw_black_rect(window)
     
     def get_legal_moves(self,agent):
         moves = [1,1,1,1] # up, right, down, left
@@ -318,7 +332,7 @@ class PacmanGame:
 
             done = self.play_step(window)
             if done:
-                break
+                self.reset(window)
         
         time.sleep(2)
         pygame.quit()
