@@ -34,26 +34,26 @@ class Ghost(Agent):
 
     def get_chase_moves(self, legal_moves, target_x, target_y):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
-        min_dist = 10000
+        min_dist = 100000000
         move = [0,0,0,0]
         
         for i in legal_idx:
             # up, right, down, left   
             if i == 0:
-                if abs(self.y - 1 - target_y) + abs(self.x - target_x) < min_dist:
-                    min_dist = abs(self.y - 1 - target_y) + abs(self.x - target_x)
+                if (self.y - 1 - target_y) ** 2 + (self.x - target_x) ** 2 < min_dist:
+                    min_dist = (self.y - 1 - target_y) ** 2 + (self.x - target_x) ** 2
                     move = [1,0,0,0]
             elif i == 1:
-                if abs(self.y - target_y) + abs(self.x + 1 - target_x) < min_dist:
-                    min_dist = abs(self.y - target_y) + abs(self.x + 1 - target_x)
+                if (self.y - target_y) ** 2 + (self.x + 1 - target_x) ** 2 < min_dist:
+                    min_dist = (self.y - target_y) ** 2 + (self.x + 1 - target_x) ** 2
                     move = [0,1,0,0]
             elif i == 2:
-                if abs(self.y + 1 - target_y) + abs(self.x - target_x) < min_dist:
-                    min_dist = abs(self.y + 1 - target_y) + abs(self.x - target_x)
+                if (self.y + 1 - target_y) ** 2 + (self.x - target_x) ** 2 < min_dist:
+                    min_dist = (self.y + 1 - target_y) ** 2 + (self.x - target_x) ** 2
                     move = [0,0,1,0]
             elif i == 3:
-                if abs(self.y - target_y) + abs(self.x - 1 - target_x) < min_dist:
-                    min_dist = abs(self.y - target_y) + abs(self.x - 1 - target_x)
+                if (self.y - target_y) ** 2 + (self.x - 1 - target_x) ** 2 < min_dist:
+                    min_dist = (self.y - target_y) ** 2 + (self.x - 1 - target_x) ** 2
                     move = [0,0,0,1]
 
         self.last_legal_moves = legal_moves
