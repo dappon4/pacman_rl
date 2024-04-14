@@ -6,8 +6,6 @@ class Pacman(Agent):
         super().__init__()
         self.x = 13
         self.y = 22
-        self.spawn_x = self.x
-        self.spawn_y = self.y
         self.powerup_duration = 0
         self.next_move = [0, 1, 0, 0]
     

@@ -10,11 +10,16 @@ class Ghost(Agent):
         self.switch_dir = False
         self.state = "alive"
     
-    def get_opposite_move(self, move):
+    def get_opposite_move(self, move, legal_moves):
         map_counter_movement = {0:2,1:3,2:0,3:1}
         idx = map_counter_movement[move.index(1)]
-        new_move = [0,0,0,0]
-        new_move[idx] = 1
+        if legal_moves[idx] == 1:
+            new_move = [0,0,0,0]
+            new_move[idx] = 1
+        else:
+            idx = random.choice([i for i, val in enumerate(legal_moves) if val == 1])
+            new_move = [0,0,0,0]
+            new_move[idx] = 1
         return new_move
     
     def get_frightened_move(self, legal_moves):
@@ -26,11 +31,19 @@ class Ghost(Agent):
         
         move = [0, 0, 0, 0]
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
-        move_idx = random.choice(legal_idx)
-        
-        move[move_idx] = 1
-        self.last_legal_moves = legal_moves
-        return move
+        try:
+            move_idx = random.choice(legal_idx)
+            
+            move[move_idx] = 1
+            self.last_legal_moves = legal_moves
+            return move
+        except IndexError:
+            print("index error in scatter moves")
+            print(self.name)
+            print(legal_moves)
+            print(self.x,self.y)
+            print(self.prev_x,self.prev_y)
+            exit()
 
     def get_chase_moves(self, legal_moves, target_x, target_y):
         legal_idx = [i for i, val in enumerate(legal_moves) if val == 1]
@@ -68,6 +81,7 @@ class Ghost(Agent):
 class Blinky(Ghost):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "Blinky"
         self.x = 13
         self.y = 12
         self.spawn_x = self.x
@@ -78,7 +92,7 @@ class Blinky(Ghost):
             return self.return_to_spawn(legal_moves)
         elif self.switch_dir:
             self.switch_dir = False
-            return self.get_opposite_move(self.last_move)
+            return self.get_opposite_move(self.last_move, legal_moves)
         elif pacman.powerup_duration > 0:
             return self.get_frightened_move(legal_moves)
         elif legal_moves == self.last_legal_moves:
@@ -90,6 +104,7 @@ class Blinky(Ghost):
 class Pinky(Ghost):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "Pinky"
         self.x = 14
         self.y = 12
         self.spawn_x = self.x
@@ -100,7 +115,7 @@ class Pinky(Ghost):
             return self.return_to_spawn(legal_moves)
         elif self.switch_dir:
             self.switch_dir = False
-            return self.get_opposite_move(self.last_move)
+            return self.get_opposite_move(self.last_move, legal_moves)
         elif pacman.powerup_duration > 0:
             return self.get_frightened_move(legal_moves)
         elif legal_moves == self.last_legal_moves:
@@ -124,6 +139,7 @@ class Pinky(Ghost):
 class Clyde(Ghost):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "Clyde"
         self.x = 13
         self.y = 13
         self.spawn_x = self.x
@@ -134,7 +150,7 @@ class Clyde(Ghost):
             return self.return_to_spawn(legal_moves)
         elif self.switch_dir:
             self.switch_dir = False
-            return self.get_opposite_move(self.last_move)
+            return self.get_opposite_move(self.last_move, legal_moves)
         elif pacman.powerup_duration > 0:
             return self.get_frightened_move(legal_moves)
         elif legal_moves == self.last_legal_moves:
@@ -147,6 +163,7 @@ class Clyde(Ghost):
 class Inky(Ghost):
     def __init__(self) -> None:
         super().__init__()
+        self.name = "Inky"
         self.x = 14
         self.y = 13
         self.spawn_x = self.x
